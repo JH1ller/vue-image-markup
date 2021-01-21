@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { fabric } from "fabric";
 import Shape from "./assets/js/shape";
 import Text from "./assets/js/text";
@@ -128,6 +128,9 @@ export default {
     },
     serialize() {
       return this.canvas.toJSON();
+    },
+    loadFromJSON(json: string) {
+      this.canvas.loadFromJSON(json);
     },
     getCanvas() {
       return this.canvas;
@@ -374,7 +377,7 @@ export default {
       let reader = new FileReader();
       reader.onload = function (event) {
         let imgObj = new Image();
-        imgObj.src = event.target.result;
+        imgObj.src = (event.target as any).result;
         imgObj.onload = function () {
           let image = new fabric.Image(imgObj);
           if (
