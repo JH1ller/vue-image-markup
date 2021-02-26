@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { fabric } from "fabric";
 import Shape from "./assets/js/shape";
 import Text from "./assets/js/text";
@@ -27,6 +27,10 @@ export default {
       default: "c",
       required: false,
     },
+    color: {
+      type: String,
+      default: "#fff",
+    },
   },
   data() {
     return {
@@ -44,12 +48,16 @@ export default {
       width: null,
       height: null,
       params: {},
-      color: "#000000",
       strokeWidth: 7,
       fontSize: 32,
       croppedImage: false,
       history: [],
     };
+  },
+  watch: {
+    color: function () {
+      this.set(this.currentActiveTool);
+    },
   },
   mounted() {
     this.canvas = new fabric.Canvas(this.editorId);
@@ -78,10 +86,6 @@ export default {
         }
       });
       return findedObject;
-    },
-    changeColor(colorProperty) {
-      this.color = colorProperty;
-      this.set(this.currentActiveTool);
     },
     setBackgroundImage(imageUrl, backgroundColor = "#fff") {
       let img = new Image();
@@ -129,7 +133,7 @@ export default {
     serialize() {
       return this.canvas.toJSON();
     },
-    loadFromJSON(json: string) {
+    loadFromJSON(json) {
       this.canvas.loadFromJSON(json);
     },
     getCanvas() {
@@ -377,7 +381,7 @@ export default {
       let reader = new FileReader();
       reader.onload = function (event) {
         let imgObj = new Image();
-        imgObj.src = (event.target as any).result;
+        imgObj.src = event.target.result;
         imgObj.onload = function () {
           let image = new fabric.Image(imgObj);
           if (
